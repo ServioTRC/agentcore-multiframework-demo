@@ -174,3 +174,7 @@ python3 -m deploy.deploy_agent --account-id 449828813699 --region us-east-1
 # 4. Test invocation
 python3 -m deploy.invoke_agent --runtime-id <RUNTIME_ID> --prompt "What's the status of INV-001?"
 ```
+
+python3 -m deploy.invoke_agent \
+    --runtime-arn arn:aws:bedrock-agentcore:us-east-1:449828813699:runtime/invoice_demo_agent-tADvr5A4tk \
+    --prompt "What's the status of INV-001?" --region "us-east-1"

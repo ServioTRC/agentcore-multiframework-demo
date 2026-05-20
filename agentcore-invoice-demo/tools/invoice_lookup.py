@@ -53,10 +53,11 @@ def _build_langchain_agent():
         model_id="us.anthropic.claude-sonnet-4-6",
         region_name="us-east-1",
     )
-    return create_agent(llm, tools=_LC_TOOLS, system_prompt=(
-        "You are an invoice lookup assistant. Use the available tools to find "
-        "invoice details. Return clear, concise answers."
-    ))
+    return create_agent(
+        llm,
+        tools=_LC_TOOLS,
+        system_prompt="You are an invoice lookup assistant. Use the available tools to find invoice details. Return clear, concise answers.",
+    )
 
 
 # --- Strands @tool wrapper ---
@@ -79,14 +80,10 @@ def invoice_lookup(query: str) -> str:
             agent = _build_langchain_agent()
             result = agent.invoke({"messages": [{"role": "user", "content": query}]})
             messages = result.get("messages", [])
-            for msg in reversed(messages):
-                if hasattr(msg, "content") and msg.content and not getattr(msg, "tool_calls", None):
-                    output = msg.content
-                    span.set_attribute("tool.output_length", len(output))
-                    span.set_status(trace.StatusCode.OK)
-                    return output
+            output = messages[-1].content if messages else "No results found."
+            span.set_attribute("tool.output_length", len(output))
             span.set_status(trace.StatusCode.OK)
-            return "No results found."
+            return output
         except Exception as e:
             span.set_status(trace.StatusCode.ERROR, str(e))
             span.record_exception(e)

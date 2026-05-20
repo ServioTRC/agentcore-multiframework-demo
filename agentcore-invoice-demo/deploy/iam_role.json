@@ -37,7 +37,12 @@
                     "bedrock:InvokeModel",
                     "bedrock:InvokeModelWithResponseStream"
                   ],
-                  "Resource": "arn:aws:bedrock:*::foundation-model/*"
+                  "Resource": [
+                "arn:aws:bedrock:*::foundation-model/*",
+                {
+                  "Fn::Sub": "arn:aws:bedrock:*:${AccountId}:inference-profile/*"
+                }
+              ]
                 },
                 {
                   "Sid": "ECRImagePull",

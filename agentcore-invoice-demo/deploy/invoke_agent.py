@@ -29,7 +29,7 @@ def invoke_agent(runtime_arn: str, prompt: str, region: str, session_id: str | N
         accept="application/json",
     )
 
-    body = json.loads(response["body"].read())
+    body = json.loads(response["response"].read())
     return body.get("outputText", json.dumps(body, indent=2))
 
 

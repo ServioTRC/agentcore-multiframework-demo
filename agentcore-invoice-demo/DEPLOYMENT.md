@@ -162,19 +162,15 @@ print([s for s in botocore.session.Session().get_available_services() if 'agentc
 # 1. Create IAM role
 aws cloudformation deploy --template-file deploy/iam_role.json \
   --stack-name agentcore-invoice-demo-role \
-  --parameter-overrides AccountId=449828813699 \
+  --parameter-overrides AccountId=<ACCOUNT_ID> \
   --capabilities CAPABILITY_NAMED_IAM --region us-east-1
 
 # 2. Build & push container
-./deploy/build_and_push.sh 449828813699 us-east-1
+./deploy/build_and_push.sh <ACCOUNT_ID> us-east-1
 
 # 3. Deploy to AgentCore
-python3 -m deploy.deploy_agent --account-id 449828813699 --region us-east-1
+python3 -m deploy.deploy_agent --account-id <ACCOUNT_ID> --region us-east-1
 
 # 4. Test invocation
 python3 -m deploy.invoke_agent --runtime-id <RUNTIME_ID> --prompt "What's the status of INV-001?"
 ```
-
-python3 -m deploy.invoke_agent \
-    --runtime-arn arn:aws:bedrock-agentcore:us-east-1:449828813699:runtime/invoice_demo_agent-tADvr5A4tk \
-    --prompt "What's the status of INV-001?" --region "us-east-1"

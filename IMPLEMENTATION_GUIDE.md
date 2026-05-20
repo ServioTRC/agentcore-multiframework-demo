@@ -215,14 +215,14 @@ CMD ["uv", "run", "opentelemetry-instrument", "uvicorn", "agent:app", "--host", 
 
 ```bash
 # Create ECR repo
-aws ecr create-repository --repository-name agentcore-invoice-demo --region us-west-2
+aws ecr create-repository --repository-name agentcore-invoice-demo --region us-east-1
 
 # Login
-aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-west-2.amazonaws.com
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account-id>.dkr.ecr.us-east-1.amazonaws.com
 
 # Build ARM64 and push
 docker buildx build --platform linux/arm64 \
-  -t <account-id>.dkr.ecr.us-west-2.amazonaws.com/agentcore-invoice-demo:latest \
+  -t <account-id>.dkr.ecr.us-east-1.amazonaws.com/agentcore-invoice-demo:latest \
   --push .
 ```
 
@@ -231,13 +231,13 @@ docker buildx build --platform linux/arm64 \
 ```python
 import boto3
 
-client = boto3.client('bedrock-agentcore-control', region_name='us-west-2')
+client = boto3.client('bedrock-agentcore-control', region_name='us-east-1')
 
 response = client.create_agent_runtime(
     agentRuntimeName='invoice-demo-agent',
     agentRuntimeArtifact={
         'containerConfiguration': {
-            'containerUri': '<account-id>.dkr.ecr.us-west-2.amazonaws.com/agentcore-invoice-demo:latest'
+            'containerUri': '<account-id>.dkr.ecr.us-east-1.amazonaws.com/agentcore-invoice-demo:latest'
         }
     },
     networkConfiguration={"networkMode": "PUBLIC"},
@@ -254,7 +254,7 @@ response = client.create_agent_runtime(
 ```python
 import boto3, json
 
-client = boto3.client('bedrock-agentcore', region_name='us-west-2')
+client = boto3.client('bedrock-agentcore', region_name='us-east-1')
 
 response = client.invoke_agent_runtime(
     agentRuntimeArn='<agent-runtime-arn>',
